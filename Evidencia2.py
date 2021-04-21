@@ -22,13 +22,11 @@ def generar(articulos):
                 else:
                     articulos[clave]=[(clave,descripcion, cantidad,precio,total,fechan)]
                     datos.append((clave, descripcion, cantidad,precio,total,fechan))
-        print(articulos)
     return articulos
 
 articulos={}
 generar(articulos)
-print(articulos)
-input("-----")
+
 
 while True:
     print("\n\tMain menu")
@@ -74,7 +72,6 @@ while True:
             print("\n\tNo se ha encontrado dicho numero de venta")
         input("<<ENTER>>")
 
-
     elif opcion =='3':
         print("\tObtener un reporte de ventas para una fecha en específico\n")
         print(articulos)
@@ -88,11 +85,6 @@ while True:
             print(f"Ocurrio un Error {e}\nVuelve a intentarlo\n")
         finally:
             archivo.close()
-
-
-
-
-
 
     elif opcion =='X':
         print("\nSaliendo...\n")
