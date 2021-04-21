@@ -2,26 +2,20 @@ import datetime
 import csv
 
 def generar(articulos):
-    contador=0
-    datos = list()
 
     with open("datos.csv", "r") as archivo:
         lector = csv.reader(archivo, delimiter = ",")
         registros = 0
-        
         for clave, descripcion, cantidad,precio,total,fechan in lector:
             if registros == 0:
-                columnas = (clave,descripcion, cantidad,precio,total,fechan)
                 registros = registros + 1
             else:
-                contador=0
-                clave = int(clave)
-                print(clave,descripcion, cantidad,precio,total,fechan)
+                clave=int(clave)
                 if clave in articulos:
-                    articulos[clave].append((clave, descripcion, cantidad,precio,total,fechan))
+                    articulos[clave].append((clave,descripcion, int(cantidad),float(precio),float(total),fechan))
                 else:
-                    articulos[clave]=[(clave,descripcion, cantidad,precio,total,fechan)]
-                    datos.append((clave, descripcion, cantidad,precio,total,fechan))
+                    articulos[clave]=[(clave,descripcion, int(cantidad),float(precio),float(total),fechan)]
+        
     return articulos
 
 articulos={}
@@ -32,11 +26,13 @@ while True:
     print("\n\tMain menu")
     print("1-Registrar una venta")
     print("2-Consultar una venta")
+    print("3-Obtener un reporte de ventas para una fecha en específico")
+    print("3-")
     print("X-Salir ")
     opcion = input("Elige una opcion")
     if opcion =='1':
         monto_total=0
-        print("Registrar")
+        print("\n\tRegistrar")
         contador= max(articulos,default=0)+1
         articulos[contador]=[]
         while opcion !='0':
@@ -71,7 +67,6 @@ while True:
         else:
             print("\n\tNo se ha encontrado dicho numero de venta")
         input("<<ENTER>>")
-
     elif opcion =='3':
         print("\tObtener un reporte de ventas para una fecha en específico\n")
         print(articulos)
@@ -85,7 +80,6 @@ while True:
             print(f"Ocurrio un Error {e}\nVuelve a intentarlo\n")
         finally:
             archivo.close()
-
     elif opcion =='X':
         print("\nSaliendo...\n")
         break
