@@ -2,19 +2,26 @@ import datetime
 import csv
 
 def generar(articulos):
-
-    with open("datos.csv", "r") as archivo:
-        lector = csv.reader(archivo, delimiter = ",")
-        registros = 0
-        for clave, descripcion, cantidad,precio,total,fechan in lector:
-            if registros == 0:
-                registros = registros + 1
-            else:
-                clave=int(clave)
-                if clave in articulos:
-                    articulos[clave].append((clave,descripcion, int(cantidad),float(precio),float(total),fechan))
-                else:
-                    articulos[clave]=[(clave,descripcion, int(cantidad),float(precio),float(total),fechan)]
+    
+    try:
+        with open("datos.csv", "r") as archivo:
+            lector = csv.reader(archivo, delimiter = ",")
+            registros = 0
+            if lector:
+                for clave, descripcion, cantidad,precio,total,fechan in lector:
+                    if registros == 0:
+                        registros = registros + 1
+                    else:
+                        clave=int(clave)
+                        if clave in articulos:
+                            articulos[clave].append((clave,descripcion, int(cantidad),float(precio),float(total),fechan))
+                        else:
+                            articulos[clave]=[(clave,descripcion, int(cantidad),float(precio),float(total),fechan)]
+            
+    except Exception as e:
+        print(e)
+    finally:
+        archivo.close()
         
     return articulos
 
@@ -27,7 +34,6 @@ while True:
     print("1-Registrar una venta")
     print("2-Consultar una venta")
     print("3-Obtener un reporte de ventas para una fecha en específico")
-    print("3-")
     print("X-Salir ")
     opcion = input("Elige una opcion")
     if opcion =='1':
