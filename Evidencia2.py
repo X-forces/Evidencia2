@@ -1,8 +1,7 @@
 import datetime
 import csv
 
-def generar(articulos):
-    
+def leer_csv(articulos):
     try:
         with open("datos.csv", "r") as archivo:
             lector = csv.reader(archivo, delimiter = ",")
@@ -16,8 +15,7 @@ def generar(articulos):
                         if clave in articulos:
                             articulos[clave].append((clave,descripcion, int(cantidad),float(precio),float(total),fechan))
                         else:
-                            articulos[clave]=[(clave,descripcion, int(cantidad),float(precio),float(total),fechan)]
-            
+                            articulos[clave]=[(clave,descripcion, int(cantidad),float(precio),float(total),fechan)]            
     except Exception as e:
         print(e)
     finally:
@@ -25,12 +23,26 @@ def generar(articulos):
         
     return articulos
 
+def generar(articulos):
+    try:
+        with open("datos.csv", "w", newline="") as archivo:
+            registrador = csv.writer(archivo)
+            registrador.writerow(("Clave","Descripcion","Cantidad","Precio","Total","Fecha de Venta"))
+            for i in articulos.keys():
+                registrador.writerows(articulos[i])
+    except Exception as e:
+        print(f"Ocurrio un Error {e}\nVuelve a intentarlo\n")
+    finally:
+        archivo.close()
+    return articulos 
+
 articulos={}
-generar(articulos)
+leer_csv(articulos)
+print(articulos)
 
 
 while True:
-    print("\n\tMain menu")
+    print("\n\tMenu principal de Cosmeticos")
     print("1-Registrar una venta")
     print("2-Consultar una venta")
     print("3-Obtener un reporte de ventas para una fecha en específico")
@@ -48,11 +60,12 @@ while True:
                     cantidad = int(input("Escribe la cantidad a comprar del articulo: "))
                     precio= float(input(f"Escribe el precio del articulo: "))
                     fecha=input("Dime una fecha (dd/mm/aaaa): \n")
-                    fecha_procesada = datetime.datetime.strptime(fecha, "%d/%m/%Y").date()
+                    fecha_datetime = datetime.datetime.strptime(fecha, "%d/%m/%Y").date()
+                    fecha_procesada = fecha_datetime.strftime('%d/%m/%Y')
                     break
                 except Exception as e:
-                    print(e)    
-            compra = (contador,descripcion.upper(),cantidad,precio,cantidad*precio,fecha)
+                    print(f'Error vuelve a intentarlo\t{e}')    
+            compra = (contador,descripcion.upper(),cantidad,precio,cantidad*precio,fecha_procesada)
             monto_total=monto_total+cantidad*precio
             articulos[contador].append(compra)
             opcion=input("Escribe si deseas continuar (1-Continuar registrando/0-Dejar de registar: ")
@@ -75,18 +88,23 @@ while True:
         input("<<ENTER>>")
     elif opcion =='3':
         print("\tObtener un reporte de ventas para una fecha en específico\n")
-        print(articulos)
-        try:
-            with open("datos.csv", "w", newline="") as archivo:
-                registrador = csv.writer(archivo)
-                registrador.writerow(("Clave","Descripcion","Cantidad","Precio","Total","Fecha de Venta"))
-                for i in articulos.keys():
-                    registrador.writerows(articulos[i])
-        except Exception as e:
-            print(f"Ocurrio un Error {e}\nVuelve a intentarlo\n")
-        finally:
-            archivo.close()
+        while True:
+            try:
+                reporte_f=input("Dime la fecha ha encontrar (dd/mm/aaaa): \n")
+                reporte_fecha = datetime.datetime.strptime(reporte_f, "%d/%m/%Y").date()
+                print(f"Fecha { reporte_fecha}\n")
+                for i in articulos.values():
+                    for j in i:
+                        if reporte_fecha.strftime('%d/%m/%Y') == j[5]:
+                            print(f"\tFolio: {j[0]}\tDescripcion{j[1]}\tCantidad{j[2]}\tPrecio: {j[3]}\tTotal:{j[4]}\n")
+                print(articulos)
+                break
+            except Exception as e:
+                print(f"Error Vuelve a intentar\t{e}\n")
+                input("<<Enter>>")
     elif opcion =='X':
+        generar(articulos)
+        print("\n\t\t**---Almacenamiento en cambios del sistema--**\n")
         print("\nSaliendo...\n")
         break
     else:
