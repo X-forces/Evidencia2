@@ -17,7 +17,9 @@ def leer_csv(articulos):
                         else:
                             articulos[clave]=[(clave,descripcion, int(cantidad),float(precio),float(total),fechan)]            
     except Exception as e:
-        print(e)
+        print("\n\n\tVerificando Almacenamiento..")
+        input("<<ENTER>>")
+        print("Memoria sincronizada\n")
     finally:
         archivo.close()
         
@@ -37,9 +39,11 @@ def generar(articulos):
     return articulos 
 
 articulos={}
-leer_csv(articulos)
-print(articulos)
+if not articulos:
+    with open("datos.csv", "a") as archivo:
+        archivo.close()
 
+leer_csv(articulos)
 
 while True:
     print("\n\tMenu principal de Cosmeticos")
@@ -47,7 +51,7 @@ while True:
     print("2-Consultar una venta")
     print("3-Obtener un reporte de ventas para una fecha en específico")
     print("X-Salir ")
-    opcion = input("Elige una opcion")
+    opcion = input("Elige una opcion: ")
     if opcion =='1':
         monto_total=0
         print("\n\tRegistrar")
@@ -59,7 +63,7 @@ while True:
                     descripcion = input(f"Escribe la descripcion de la venta {contador}: ")
                     cantidad = int(input("Escribe la cantidad a comprar del articulo: "))
                     precio= float(input(f"Escribe el precio del articulo: "))
-                    fecha=input("Dime una fecha (dd/mm/aaaa): \n")
+                    fecha=input("Dime la fecha (dd/mm/aaaa): \n")
                     fecha_datetime = datetime.datetime.strptime(fecha, "%d/%m/%Y").date()
                     fecha_procesada = fecha_datetime.strftime('%d/%m/%Y')
                     break
@@ -92,19 +96,18 @@ while True:
             try:
                 reporte_f=input("Dime la fecha ha encontrar (dd/mm/aaaa): \n")
                 reporte_fecha = datetime.datetime.strptime(reporte_f, "%d/%m/%Y").date()
-                print(f"Fecha { reporte_fecha}\n")
+                print(f"Fecha {reporte_fecha}\n")
                 for i in articulos.values():
                     for j in i:
                         if reporte_fecha.strftime('%d/%m/%Y') == j[5]:
-                            print(f"\tFolio: {j[0]}\tDescripcion{j[1]}\tCantidad{j[2]}\tPrecio: {j[3]}\tTotal:{j[4]}\n")
-                print(articulos)
+                            print(f"\tFolio: {j[0]}\tDescripcion: {j[1]}\tCantidad: {j[2]}\tPrecio: {j[3]}\tTotal:{j[4]}\n")
                 break
             except Exception as e:
                 print(f"Error Vuelve a intentar\t{e}\n")
                 input("<<Enter>>")
     elif opcion =='X':
         generar(articulos)
-        print("\n\t\t**---Almacenamiento en cambios del sistema--**\n")
+        print("\n\t\t**---Almacenando cambios del sistema--**\n")
         print("\nSaliendo...\n")
         break
     else:
